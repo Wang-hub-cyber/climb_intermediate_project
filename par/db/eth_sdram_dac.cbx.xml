@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<LOG_ROOT>
+	<PROJECT NAME="eth_sdram_dac">
+		<CBX_INST_ENTRY INSTANCE_NAME="|eth_sdram_dac|pll_clk:u_pll_clk|altpll:altpll_component" CBX_FILE_NAME="pll_clk_altpll1.v"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|eth_sdram_dac|sdram_top:u_sdram_top|sdram_fifo_ctrl:u_sdram_fifo_ctrl|rdfifo:u_rdfifo|dcfifo:dcfifo_component" CBX_FILE_NAME="dcfifo_cll1.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|eth_sdram_dac|sld_signaltap:auto_signaltap_0|sld_signaltap_impl:sld_signaltap_body|sld_signaltap_implb:sld_signaltap_body|altdpram:\stp_non_zero_ram_gen:attribute_mem_gen:attribute_mem|lpm_decode:wdecoder" CBX_FILE_NAME="decode_dvf.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|eth_sdram_dac|sld_signaltap:auto_signaltap_0|sld_signaltap_impl:sld_signaltap_body|sld_signaltap_implb:sld_signaltap_body|sld_offload_buffer_mgr:\stp_non_zero_depth_offload_gen:stp_offload_buff_mgr_inst|LPM_COUNTER:status_read_pointer_counter" CBX_FILE_NAME="cntr_23j.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|eth_sdram_dac|eth_top:u_eth_top|gmii_to_rgmii:u_gmii_to_rgmii|rgmii_rx:u_rgmii_rx|ddi_x1:ddi_x1_inst|altddio_in:ALTDDIO_IN_component" CBX_FILE_NAME="ddio_in_8hf.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|eth_sdram_dac|eth_top:u_eth_top|gmii_to_rgmii:u_gmii_to_rgmii|rgmii_tx:u_rgmii_tx|ddo_x4:ddo_x4_inst|altddio_out:ALTDDIO_OUT_component" CBX_FILE_NAME="ddio_out_s9j.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|eth_sdram_dac|sld_signaltap:auto_signaltap_0|sld_signaltap_impl:sld_signaltap_body|sld_signaltap_implb:sld_signaltap_body|sld_offload_buffer_mgr:\stp_non_zero_depth_offload_gen:stp_offload_buff_mgr_inst|LPM_COUNTER:read_pointer_counter" CBX_FILE_NAME="cntr_g9j.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|eth_sdram_dac|eth_top:u_eth_top|pll:u_pll|altpll:altpll_component" CBX_FILE_NAME="pll_altpll1.v"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|eth_sdram_dac|sdram_top:u_sdram_top|sdram_fifo_ctrl:u_sdram_fifo_ctrl|wrfifo:u_wrfifo|dcfifo:dcfifo_component" CBX_FILE_NAME="dcfifo_pkl1.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|eth_sdram_dac|sld_signaltap:auto_signaltap_0|sld_signaltap_impl:sld_signaltap_body|sld_signaltap_implb:sld_signaltap_body|altsyncram:\stp_non_zero_ram_gen:stp_buffer_ram" CBX_FILE_NAME="altsyncram_6u14.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|eth_sdram_dac|sld_signaltap:auto_signaltap_0|sld_signaltap_impl:sld_signaltap_body|sld_signaltap_implb:sld_signaltap_body|sld_offload_buffer_mgr:\stp_non_zero_depth_offload_gen:stp_offload_buff_mgr_inst|LPM_COUNTER:status_advance_pointer_counter" CBX_FILE_NAME="cntr_egi.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|eth_sdram_dac|eth_top:u_eth_top|gmii_to_rgmii:u_gmii_to_rgmii|rgmii_rx:u_rgmii_rx|ddi_x4:ddi_x4_inst|altddio_in:ALTDDIO_IN_component" CBX_FILE_NAME="ddio_in_bhf.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|eth_sdram_dac|eth_top:u_eth_top|gmii_to_rgmii:u_gmii_to_rgmii|rgmii_tx:u_rgmii_tx|ddo_x1:ddo_x1_clk|altddio_out:ALTDDIO_OUT_component" CBX_FILE_NAME="ddio_out_p9j.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|eth_sdram_dac|eth_top:u_eth_top|gmii_to_rgmii:u_gmii_to_rgmii|rgmii_tx:u_rgmii_tx|ddo_x1:ddo_x1_inst|altddio_out:ALTDDIO_OUT_component" CBX_FILE_NAME="ddio_out_p9j.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|eth_sdram_dac|sld_signaltap:auto_signaltap_0|sld_signaltap_impl:sld_signaltap_body|sld_signaltap_implb:sld_signaltap_body|altdpram:\stp_non_zero_ram_gen:attribute_mem_gen:attribute_mem|lpm_mux:mux" CBX_FILE_NAME="mux_rsc.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|eth_sdram_dac|sld_signaltap:auto_signaltap_0|sld_signaltap_impl:sld_signaltap_body|sld_signaltap_implb:sld_signaltap_body|sld_offload_buffer_mgr:\stp_non_zero_depth_offload_gen:stp_offload_buff_mgr_inst|LPM_COUNTER:\adv_point_3_and_more:advance_pointer_counter" CBX_FILE_NAME="cntr_vei.tdf"/>
+	</PROJECT>
+</LOG_ROOT>

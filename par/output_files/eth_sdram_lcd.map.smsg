@@ -1,0 +1,11 @@
+Info (10281): Verilog HDL Declaration information at eth_top.v(23): object "DES_MAC" differs only in case from object "des_mac" in the same scope
+Info (10281): Verilog HDL Declaration information at eth_top.v(25): object "DES_IP" differs only in case from object "des_ip" in the same scope
+Info (10281): Verilog HDL Declaration information at udp.v(18): object "des_mac" differs only in case from object "DES_MAC" in the same scope
+Info (10281): Verilog HDL Declaration information at udp.v(19): object "des_ip" differs only in case from object "DES_IP" in the same scope
+Info (10281): Verilog HDL Declaration information at udp_tx.v(8): object "des_mac" differs only in case from object "DES_MAC" in the same scope
+Info (10281): Verilog HDL Declaration information at udp_tx.v(9): object "des_ip" differs only in case from object "DES_IP" in the same scope
+Info (10281): Verilog HDL Declaration information at udp_rx.v(27): object "ETH_TYPE" differs only in case from object "eth_type" in the same scope
+Info (10281): Verilog HDL Declaration information at arp.v(18): object "des_mac" differs only in case from object "DES_MAC" in the same scope
+Info (10281): Verilog HDL Declaration information at arp.v(19): object "des_ip" differs only in case from object "DES_IP" in the same scope
+Info (10281): Verilog HDL Declaration information at arp_tx.v(7): object "des_mac" differs only in case from object "DES_MAC" in the same scope
+Info (10281): Verilog HDL Declaration information at arp_tx.v(8): object "des_ip" differs only in case from object "DES_IP" in the same scope
