@@ -1,0 +1,21 @@
+{
+  "name": "udp-websocket-server",
+  "version": "1.0.0",
+  "description": "UDP WebSocket代理服务器，用于浏览器和UDP设备之间的通信",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "install-deps": "npm install ws"
+  },
+  "dependencies": {
+    "ws": "^8.18.2"
+  },
+  "keywords": [
+    "udp",
+    "websocket",
+    "proxy",
+    "communication"
+  ],
+  "author": "UDP Assistant",
+  "license": "MIT"
+}

@@ -1,0 +1,657 @@
+/* 手绘波形生成器样式 */
+
+/* 基础样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f8f9fa;
+    min-height: 100vh;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* 标题区域 */
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+header h1 {
+    color: #2c3e50;
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: #7f8c8d;
+    font-size: 1.1em;
+    font-style: italic;
+}
+
+/* 主要内容区域 */
+.main-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: start;
+}
+
+/* 面板通用样式 */
+.drawing-panel, .toolbar-panel, .canvas-panel, .preset-panel, 
+.preview-panel, .preview-panel-compact, .export-panel, .stats-panel {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 新的布局排列 */
+.canvas-panel {
+    grid-column: 1 / -1;  /* 跨两列，占据整个宽度 */
+    order: 1;             /* 第一个显示 */
+}
+
+/* 第二行：工具栏和预设波形 */
+.toolbar-panel {
+    grid-column: 1;
+    order: 2;
+    align-self: stretch;  /* 拉伸到与右侧面板相同高度 */
+}
+
+.preset-panel {
+    grid-column: 2;
+    order: 3;
+    align-self: stretch;  /* 拉伸到与左侧面板相同高度 */
+}
+
+/* 第三行：参数设置和预览 */
+.drawing-panel {
+    grid-column: 1;
+    order: 4;
+    align-self: stretch;
+    
+    /* Grid layout for internal form elements */
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto auto auto;
+    gap: 15px;
+    align-items: start;
+}
+
+.drawing-panel h2 {
+    grid-column: 1 / -1;
+    grid-row: 1;
+}
+
+/* Sample Rate (1st form-group) */
+.drawing-panel .form-group:nth-of-type(1) {
+    grid-column: 1;
+    grid-row: 2 / 5; /* Span 3 rows to match the height of the right side items */
+}
+
+/* Sample Count (2nd form-group) */
+.drawing-panel .form-group:nth-of-type(2) {
+    grid-column: 2;
+    grid-row: 2;
+}
+
+/* Periods (3rd form-group) */
+.drawing-panel .form-group:nth-of-type(3) {
+    grid-column: 2;
+    grid-row: 3;
+}
+
+/* Filename (4th form-group) */
+.drawing-panel .form-group:nth-of-type(4) {
+    grid-column: 2;
+    grid-row: 4;
+}
+
+/* Generate Button (last button-group) */
+.drawing-panel .button-group:last-child {
+    grid-column: 1 / -1;
+    grid-row: 5;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.preview-panel-compact {
+    grid-column: 2;
+    order: 5;
+    align-self: stretch;  /* 拉伸到与左侧面板相同高度 */
+}
+
+/* 第四行：导出和统计 */
+.export-panel {
+    grid-column: 1;
+    order: 6;
+    align-self: stretch;  /* 拉伸到与右侧面板相同高度 */
+}
+
+.stats-panel {
+    grid-column: 2;
+    order: 7;
+    align-self: stretch;  /* 拉伸到与左侧面板相同高度 */
+}
+
+/* 确保面板内容垂直分布 */
+.drawing-panel > *:last-child,
+.toolbar-panel > *:last-child,
+.preset-panel > *:last-child,
+.preview-panel-compact > *:last-child,
+.export-panel > *:last-child,
+.stats-panel > *:last-child {
+    margin-top: auto;
+}
+
+/* 紧凑预览面板特殊样式 */
+.preview-panel-compact {
+    padding: 15px;
+    min-height: 0; /* 允许flex拉伸 */
+}
+
+.preview-panel-compact h2 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    flex-shrink: 0; /* 标题不压缩 */
+}
+
+.preview-panel-compact .canvas-container {
+    margin: 10px 0;
+    flex: 1; /* 占据剩余空间 */
+    display: flex;
+    flex-direction: column;
+}
+
+.preview-panel-compact .canvas-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+.preview-panel-compact .canvas-container canvas {
+    max-width: 100%;
+    height: auto;
+}
+
+.preview-panel-compact .waveform-controls {
+    padding: 8px;
+    flex-shrink: 0; /* 控制区不压缩 */
+    margin-top: auto; /* 推到底部 */
+}
+
+.preview-panel-compact .control-row {
+    margin-bottom: 6px;
+    font-size: 12px;
+}
+
+.preview-panel-compact .btn-small {
+    padding: 3px 6px;
+    font-size: 11px;
+}
+
+/* 面板标题 */
+h2 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #3498db;
+    font-size: 1.4em;
+}
+
+/* 表单元素 */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.form-group input[type="number"],
+.form-group input[type="text"],
+.form-group select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 2px solid #bdc3c7;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+.form-group input[type="number"]:focus,
+.form-group input[type="text"]:focus,
+.form-group select:focus {
+    border-color: #3498db;
+    outline: none;
+}
+
+.form-group input[type="range"] {
+    width: 100%;
+    margin: 5px 0;
+}
+
+.help-text {
+    font-size: 12px;
+    color: #7f8c8d;
+    margin-top: 5px;
+    display: block;
+}
+
+/* 按钮样式 */
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-block;
+    margin: 2px;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary {
+    background: #3498db;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #2980b9;
+}
+
+.btn-secondary {
+    background: #95a5a6;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #7f8c8d;
+}
+
+.btn-success {
+    background: #27ae60;
+    color: white;
+}
+
+.btn-success:hover {
+    background: #229954;
+}
+
+.btn-warning {
+    background: #f39c12;
+    color: white;
+}
+
+.btn-warning:hover {
+    background: #e67e22;
+}
+
+.btn-info {
+    background: #17a2b8;
+    color: white;
+}
+
+.btn-info:hover {
+    background: #138496;
+}
+
+.btn-small {
+    padding: 4px 8px;
+    font-size: 12px;
+}
+
+.btn-large {
+    padding: 12px 24px;
+    font-size: 16px;
+}
+
+.btn.active {
+    background: #e74c3c;
+    color: white;
+}
+
+.btn:disabled {
+    background: #bdc3c7;
+    color: #7f8c8d;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn:disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/* 按钮组 */
+.button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 15px;
+}
+
+.preset-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 5px;
+}
+
+/* 画布容器 */
+.canvas-container {
+    position: relative;
+    margin: 15px 0;
+    background: #fff;
+    border: 2px solid #bdc3c7;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+/* 画布包装器 - 简化布局 */
+.canvas-wrapper {
+    display: flex;
+    align-items: stretch;
+    background: #f8f9fa;
+    width: 100%;
+}
+
+/* 绘制区域 */
+.drawing-zone {
+    position: relative;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fff;
+}
+
+.drawing-zone.full-width {
+    width: 100%;
+    border: 2px solid #e74c3c;
+    border-radius: 3px;
+}
+
+.preview-zone.full-width {
+    border: 1px solid #e74c3c;
+    border-radius: 3px;
+}
+
+/* 区域标记 */
+.zone-markers {
+    position: absolute;
+    top: 5px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+    padding: 0 10px;
+}
+
+.zone-markers.small {
+    font-size: 10px;
+    padding: 0 5px;
+}
+
+.start-marker, .end-marker {
+    background: rgba(231, 76, 60, 0.9);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.zone-markers.small .start-marker,
+.zone-markers.small .end-marker {
+    padding: 1px 4px;
+    font-size: 9px;
+}
+
+.canvas-container canvas {
+    display: block;
+    cursor: crosshair;
+    background: transparent;
+}
+
+.canvas-container canvas:hover {
+    background: rgba(233, 236, 239, 0.3);
+}
+
+.canvas-info {
+    background: #34495e;
+    color: white;
+    padding: 8px 15px;
+    font-size: 14px;
+    text-align: center;
+}
+
+/* 波形控制 */
+.waveform-controls, .canvas-controls {
+    background: #ecf0f1;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.control-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+}
+
+.control-row:last-child {
+    margin-bottom: 0;
+}
+
+.control-row label {
+    margin: 0;
+    min-width: 80px;
+    font-size: 14px;
+}
+
+.control-row input[type="range"] {
+    flex: 1;
+    min-width: 100px;
+}
+
+.control-row span {
+    min-width: 40px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* 复选框组 */
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: normal;
+    margin: 0;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+}
+
+/* 数据预览 */
+.data-preview {
+    margin: 15px 0;
+}
+
+.data-preview h3 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+
+.data-preview textarea {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #bdc3c7;
+    border-radius: 5px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    background: #f8f9fa;
+    resize: vertical;
+}
+
+/* 统计信息网格 */
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.stat-item {
+    background: #ecf0f1;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.stat-label {
+    display: block;
+    font-size: 12px;
+    color: #7f8c8d;
+    margin-bottom: 5px;
+}
+
+.stat-value {
+    display: block;
+    font-size: 16px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .canvas-panel, .preview-panel {
+        grid-column: 1;
+    }
+    
+    .stats-panel {
+        grid-column: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    header h1 {
+        font-size: 2em;
+    }
+    
+    .subtitle {
+        font-size: 1em;
+    }
+    
+    .canvas-container canvas {
+        width: 100%;
+        height: auto;
+    }
+    
+    .control-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .control-row label {
+        min-width: auto;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .button-group {
+        justify-content: center;
+    }
+}
+
+/* 特殊效果 */
+.btn-large {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* 画笔大小指示器 */
+#brushSizeValue {
+    background: #3498db;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 12px;
+}
+
+/* 绘制模式指示 */
+.canvas-container.draw-mode canvas {
+    cursor: crosshair;
+}
+
+.canvas-container.erase-mode canvas {
+    cursor: not-allowed;
+}
+
+/* 工具提示 */
+.btn[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    background: #34495e;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 1000;
+    margin-top: 25px;
+    margin-left: -50px;
+}

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>信号合成上位机</title>
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+    <div class="app-container">    <!DOCTYPE html>
+    <html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>UDP通信助手</title>
+        <link rel="stylesheet" href="styles.css">
+        <style>
+            /* 局部样式覆盖或补充 */
+            body { padding: 20px; background-color: #fff; }
+            .panel { border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+            .panel-title { font-size: 16px; font-weight: bold; margin-bottom: 15px; color: #333; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+            .form-group { margin-bottom: 15px; }
+            .form-group label { display: block; margin-bottom: 5px; color: #666; }
+            .form-control { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+            .btn { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; transition: background 0.2s; }
+            .btn-primary { background-color: #007bff; color: white; }
+            .btn-primary:hover { background-color: #0056b3; }
+            .btn-danger { background-color: #dc3545; color: white; }
+            .btn-secondary { background-color: #6c757d; color: white; }
+            .log-area { width: 100%; height: 300px; border: 1px solid #ddd; border-radius: 4px; padding: 10px; overflow-y: auto; font-family: monospace; font-size: 12px; background: #f9f9f9; box-sizing: border-box; }
+            .status-box { margin-top: 10px; padding: 10px; border-radius: 4px; background: #e9ecef; font-size: 13px; display: flex; align-items: center; }
+            .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #ccc; margin-right: 8px; }
+            .status-dot.connected { background: #28a745; }
+            .row { display: flex; gap: 20px; }
+            .col { flex: 1; }
+        </style>
+    </head>
+    <body>
+        <!-- 连接设置 -->
+        <div class="panel">
+            <div class="panel-title">连接设置</div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>本地端口:</label>
+                        <input type="number" id="localPort" class="form-control" value="8080">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>远程主机:</label>
+                        <input type="text" id="remoteIp" class="form-control" value="192.168.1.100">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>远程端口:</label>
+                        <input type="number" id="remotePort" class="form-control" value="8081">
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top: 10px;">
+                <button id="btnConnect" class="btn btn-primary">连接</button>
+                <button id="btnDisconnect" class="btn btn-secondary" disabled>断开</button>
+            </div>
+            <div class="status-box">
+                <span id="statusDot" class="status-dot"></span>
+                <span id="statusText">未连接</span>
+            </div>
+        </div>
+    
+        <!-- 接收数据 -->
+        <div class="panel">
+            <div class="panel-title">接收数据</div>
+            <div style="margin-bottom: 10px;">
+                <label><input type="radio" name="recvMode" value="text" checked> 文本显示</label>
+                <label style="margin-left: 15px;"><input type="radio" name="recvMode" value="hex"> 十六进制显示</label>
+                <label style="margin-left: 15px;"><input type="checkbox" id="autoScroll" checked> 自动滚动</label>
+            </div>
+            <div id="logArea" class="log-area"></div>
+            <div style="margin-top: 10px;">
+                <button id="btnClearLog" class="btn btn-secondary">清空接收</button>
+            </div>
+        </div>
+    
+        <!-- 发送数据 -->
+        <div class="panel">
+            <div class="panel-title">发送数据</div>
+            <div class="form-group">
+                <label>发送内容:</label>
+                <textarea id="sendContent" class="form-control" rows="3" placeholder="输入要发送的数据..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>发送文件:</label>
+                <input type="file" id="fileInput" style="display: none;">
+                <button id="btnSelectFile" class="btn btn-secondary">选择文件 (txt/bin)</button>
+                <span id="fileName" style="margin-left: 10px; font-size: 12px; color: #666;"></span>
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label><input type="radio" name="sendMode" value="text" checked> 文本</label>
+                <label style="margin-left: 15px;"><input type="radio" name="sendMode" value="hex"> 十六进制</label>
+            </div>
+            <div>
+                <button id="btnSend" class="btn btn-primary">发送文本</button>
+                <button id="btnSendFile" class="btn btn-secondary" disabled>发送文件</button>
+                <button id="btnClearSend" class="btn btn-secondary">清空</button>
+            </div>
+        </div>
+    
+        <script src="udp_assistant.js"></script>
+    </body>
+    </html>
+        <!-- 侧边导航栏 -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>Signal Suite</h2>
+            </div>
+            
+            <div class="nav-items">
+                <button id="navWaveform" class="nav-btn active" data-target="waveform">
+                    <span class="nav-icon">🎨</span>
+                    <span class="nav-text">手绘波形</span>
+                </button>
+                <button id="navModulation" class="nav-btn" data-target="modulation">
+                    <span class="nav-icon">📡</span>
+                    <span class="nav-text">调制信号</span>
+                </button>
+                <button id="navUdp" class="nav-btn" data-target="udp">
+                    <span class="nav-icon">🌐</span>
+                    <span class="nav-text">UDP助手</span>
+                </button>
+            </div>
+            
+            <div class="sidebar-footer">
+                <div class="status-indicator">
+                    <span id="udpStatusDot" class="status-dot disconnected"></span>
+                    <span id="udpStatusText">未连接</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 主内容区域 -->
+        <main class="main-content">
+            <!-- 手绘波形生成器模块 -->
+            <section id="waveform-module" class="module active">
+                <iframe id="waveformFrame" src="modules/waveform_generator.html" frameborder="0"></iframe>
+            </section>
+
+            <!-- 调制信号生成器模块 -->
+            <section id="modulation-module" class="module">
+                <iframe id="modulationFrame" src="modules/modulation_generator.html" frameborder="0"></iframe>
+            </section>
+
+            <!-- UDP通信助手模块 -->
+            <section id="udp-module" class="module">
+                <iframe id="udpFrame" src="modules/udp_assistant.html" frameborder="0"></iframe>
+            </section>
+        </main>
+    </div>
+
+    <!-- 数据交换桥接 -->
+    <script src="js/data-bridge.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

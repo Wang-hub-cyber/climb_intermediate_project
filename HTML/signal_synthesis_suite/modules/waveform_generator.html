@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>手绘波形生成器</title>
+    <link rel="stylesheet" href="waveform_generator.css">
+    <style>
+        /* 简约风格覆盖 */
+        body { background-color: #f5f7fa; padding: 20px; }
+        .container { background: transparent; box-shadow: none; height: auto; }
+        .main-content { padding: 0; }
+        .canvas-panel { background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 20px; margin-bottom: 20px; }
+        .toolbar-panel, .preset-panel, .drawing-panel { background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 20px; margin-bottom: 20px; }
+        h2 { font-size: 1.1rem; color: #2c3e50; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .btn { border-radius: 4px; font-weight: 500; transition: all 0.2s; }
+        .btn:hover { transform: translateY(-1px); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        /* 隐藏冗余元素 */
+        header { display: none; }
+        .canvas-info { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+        <div class="main-content">
+            <!-- 波形绘制区域 - 放在最前面 -->
+            <div class="canvas-panel">
+                <h2>波形绘制区域</h2>
+                <div class="canvas-container">
+                    <div class="canvas-wrapper">
+                        <div class="drawing-zone full-width">
+                            <canvas id="drawingCanvas" width="1000" height="400"></canvas>
+                            <div class="zone-markers">
+                                <span class="start-marker">起始 (0%)</span>
+                                <span class="end-marker">结束 (100%)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="canvas-controls">
+                    <div class="control-row">
+                        <label>网格:</label>
+                        <input type="checkbox" id="showGrid" checked>
+                        <label>显示数值:</label>
+                        <input type="checkbox" id="showValues" checked>
+                        <label>显示坐标:</label>
+                        <input type="checkbox" id="showCoords">
+                        <label>显示边界:</label>
+                        <input type="checkbox" id="showBoundaries" checked>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 绘制工具栏 -->
+            <div class="toolbar-panel">
+                <h2>绘制工具</h2>
+                
+                <div class="button-group">
+                    <button id="drawModeBtn" class="btn btn-primary active">绘制模式</button>
+                    <button id="eraseModeBtn" class="btn btn-secondary">擦除模式</button>
+                    <button id="clearCanvasBtn" class="btn btn-warning">清空画布</button>
+                </div>
+                
+                <div class="form-group">
+                    <label for="brushSize">画笔大小:</label>
+                    <input type="range" id="brushSize" min="1" max="10" value="3" step="1">
+                    <span id="brushSizeValue">3</span>
+                </div>
+                
+                <div class="button-group">
+                    <button id="undoBtn" class="btn btn-info">撤销</button>
+                    <button id="redoBtn" class="btn btn-info">重做</button>
+                    <button id="smoothBtn" class="btn btn-secondary">平滑处理</button>
+                </div>
+            </div>
+            
+            <!-- 预设波形 -->
+            <div class="preset-panel">
+                <h2>预设波形</h2>
+                
+                <div class="button-group">
+                    <button id="sineWaveBtn" class="btn btn-secondary">正弦波</button>
+                    <button id="squareWaveBtn" class="btn btn-secondary">方波</button>
+                    <button id="triangleWaveBtn" class="btn btn-secondary">三角波</button>
+                    <button id="sawtoothWaveBtn" class="btn btn-secondary">锯齿波</button>
+                    <button id="noiseWaveBtn" class="btn btn-secondary">噪声</button>
+                </div>
+                
+                <div class="form-group">
+                    <label for="presetFreq">预设波形频率:</label>
+                    <input type="number" id="presetFreq" value="1" min="0.1" max="20" step="0.1">
+                    <span class="help-text">相对于画布宽度的频率</span>
+                </div>
+            </div>
+            
+            <!-- 波形绘制参数设置 -->
+            <div class="drawing-panel">
+                <h2>信号参数设置</h2>
+                
+                <div class="form-group">
+                    <label for="sampleRate">采样率 (Hz):</label>
+                    <input type="number" id="sampleRate" value="1000000" min="10000" max="50000000" step="1000">
+                    <span class="help-text">范围: 10kHz - 50MHz</span>
+                </div>                        <button type="button" class="btn btn-small btn-info" onclick="document.getElementById('sampleRate').value='5000000'">5MHz</button>
+                        <button type="button" class="btn btn-small btn-info" onclick="document.getElementById('sampleRate').value='10000000'">10MHz</button>
+                        <button type="button" class="btn btn-small btn-info" onclick="document.getElementById('sampleRate').value='25000000'">25MHz</button>
+                        <button type="button" class="btn btn-small btn-info" onclick="document.getElementById('sampleRate').value='50000000'">50MHz</button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="sampleCount">采样点数:</label>
+                    <select id="sampleCount">
+                        <option value="9000">9K点 (9000)</option>
+                        <option value="100000">100K点</option>
+                        <option value="500000">500K点</option>
+                        <option value="1000000">1M点</option>
+                        <option value="4000000">4M点</option>
+                        <option value="8000000" selected>8M点 (推荐)</option>
+                    </select>
+                    <span class="help-text">更多采样点提供更高精度</span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="waveformPeriods">波形周期数:</label>
+                    <select id="waveformPeriods">
+                        <option value="1" selected>1个周期</option>
+                        <option value="2">2个周期</option>
+                        <option value="5">5个周期</option>
+                        <option value="10">10个周期</option>
+                        <option value="20">20个周期</option>
+                        <option value="50">50个周期</option>
+                        <option value="100">100个周期</option>
+                        <option value="custom">自定义</option>
+                    </select>
+                    <input type="number" id="customPeriods" value="1" min="1" max="1000" step="1" style="display:none; margin-top:5px;" placeholder="输入自定义周期数">
+                    <span class="help-text">手绘的波形将重复指定次数</span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="fileName">文件名:</label>
+                    <input type="text" id="fileName" value="custom_waveform" placeholder="输入文件名(不含扩展名)">
+                </div>
+                
+                <div class="button-group">
+                    <button id="generateSignalBtn" class="btn btn-success btn-large">生成信号数据</button>
+                </div>
+            </div>
+            
+            <!-- 信号预览 - 紧凑版 -->
+            <div class="preview-panel-compact">
+                <h2>信号预览</h2>
+                
+                <div class="canvas-container">
+                    <div class="canvas-wrapper preview-wrapper">
+                        <div class="drawing-zone preview-zone full-width">
+                            <canvas id="previewCanvas" width="450" height="200"></canvas>
+                            <div class="zone-markers small">
+                                <span class="start-marker">0%</span>
+                                <span class="end-marker">100%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="canvas-info">
+                        <span id="previewInfo">生成信号后显示完整波形预览</span>
+                    </div>
+                </div>
+                
+                <div class="waveform-controls">
+                    <div class="control-row">
+                        <label for="previewMode">预览模式:</label>
+                        <select id="previewMode">
+                            <option value="full" selected>全部波形(抽点)</option>
+                            <option value="partial">部分波形(详细)</option>
+                        </select>
+                    </div>
+                    <div class="control-row" id="partialControls" style="display: none;">
+                        <label for="previewOffset">显示位置:</label>
+                        <input type="range" id="previewOffset" min="0" max="100" value="0" step="1">
+                        <span id="previewOffsetValue">0%</span>
+                    </div>
+                    <div class="control-row">
+                        <button id="refreshPreviewBtn" class="btn btn-primary btn-small">刷新预览</button>
+                        <button id="previewWaveBtn" class="btn btn-info btn-small">详细预览</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 数据导出 -->
+            <div class="export-panel">
+                <h2>数据导出</h2>
+                
+                <div class="export-options">
+                    <div class="form-group">
+                        <label>导出格式:</label>
+                        <div class="checkbox-group">
+                            <label>
+                                <input type="checkbox" id="exportTxt" checked> TXT文件 (十进制)
+                            </label>
+                            <label>
+                                <input type="checkbox" id="exportBin" checked> BIN文件 (二进制)
+                            </label>
+                            <label>
+                                <input type="checkbox" id="exportCsv"> CSV文件 (表格)
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="data-preview">
+                    <h3>DAC数据预览 (前100个点)</h3>
+                    <textarea id="dataPreview" rows="8" readonly placeholder="生成信号后将显示DAC数据预览..."></textarea>
+                </div>
+                
+                <div class="button-group">
+                    <button id="downloadTxtBtn" class="btn btn-success" disabled>下载TXT</button>
+                    <button id="downloadBinBtn" class="btn btn-success" disabled>下载BIN</button>
+                    <button id="downloadCsvBtn" class="btn btn-success" disabled>下载CSV</button>
+                </div>
+            </div>
+            
+            <!-- 统计信息 -->
+            <div class="stats-panel">
+                <h2>波形统计</h2>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-label">采样点数:</span>
+                        <span id="sampleCountStat" class="stat-value">8M</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">信号时长:</span>
+                        <span id="signalDuration" class="stat-value">-</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">文件大小:</span>
+                        <span id="fileSize" class="stat-value">-</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">平均值:</span>
+                        <span id="avgValue" class="stat-value">-</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">最大值:</span>
+                        <span id="maxValue" class="stat-value">-</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">最小值:</span>
+                        <span id="minValue" class="stat-value">-</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="waveform_generator.js"></script>
+</body>
+</html>

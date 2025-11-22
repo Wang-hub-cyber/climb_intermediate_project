@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UDP网口通信助手</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* 简约风格覆盖 */
+        body { background-color: #f5f7fa; padding: 20px; }
+        .container { background: transparent; box-shadow: none; height: auto; }
+        .main-content { padding: 0; display: flex; gap: 20px; flex-direction: column; }
+        .connection-panel, .send-panel { background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 20px; width: 100%; }
+        h2 { font-size: 1.1rem; color: #2c3e50; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .btn { border-radius: 4px; font-weight: 500; transition: all 0.2s; }
+        .btn:hover { transform: translateY(-1px); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        /* 隐藏冗余元素 */
+        header { display: none; }
+        .config-management { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+        <div class="main-content">            <!-- 连接设置区域 -->
+            <div class="connection-panel">
+                <h2>连接设置</h2>
+                
+                <div class="form-group">
+                    <label for="localHost">本地IP地址:</label>
+                    <input type="text" id="localHost" value="192.168.1.10" placeholder="本地IP地址">
+                </div>
+                <div class="form-group">
+                    <label for="localPort">本地端口:</label>
+                    <input type="number" id="localPort" value="8080" min="1" max="65535">
+                </div>
+                <div class="form-group">
+                    <label for="remoteHost">远程主机:</label>
+                    <input type="text" id="remoteHost" value="192.168.1.100" placeholder="IP地址">
+                </div>
+                <div class="form-group">
+                    <label for="remotePort">远程端口:</label>
+                    <input type="number" id="remotePort" value="8081" min="1" max="65535">
+                </div>
+                <div class="button-group">
+                    <button id="connectBtn" class="btn btn-primary">连接</button>
+                    <button id="disconnectBtn" class="btn btn-secondary" disabled>断开</button>
+                </div>
+                <div class="status">
+                    <span id="statusDot" style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#ccc; margin-right:5px;"></span>
+                    <span id="statusText" class="status-disconnected">未连接</span>
+                </div>
+            </div>            <!-- 发送数据区域 -->
+            <div class="send-panel">
+                <h2>发送数据</h2>                <div class="form-group">
+                    <label for="sendData">发送内容:</label>
+                    <textarea id="sendData" rows="8" placeholder="输入要发送的数据..."></textarea>
+                </div>
+                  <!-- 文件上传区域 -->
+                <div class="form-group">
+                    <label for="fileInput">发送文件:</label>
+                    <div class="file-input-group">
+                        <input type="file" id="fileInput" accept=".txt,.bin" style="display: none;">
+                        <button id="selectFileBtn" class="btn btn-secondary btn-small">选择文件 (txt/bin)</button>
+                        <span id="fileName" class="file-name"></span>
+                        <button id="clearFileBtn" class="btn btn-secondary btn-small" style="display: none;">清除文件</button>
+                    </div>
+                    <div class="file-info" id="fileInfo" style="display: none;">
+                        <small class="help-text">
+                            <span id="fileTypeInfo"></span>
+                            <span id="fileSizeInfo"></span>
+                        </small>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <input type="radio" name="sendFormat" value="text" checked> 文本
+                    </label>
+                    <label>
+                        <input type="radio" name="sendFormat" value="hex"> 十六进制
+                    </label>
+                </div>                <div class="button-group">
+                    <button id="sendBtn" class="btn btn-primary" disabled>发送文本</button>
+                    <button id="sendFileBtn" class="btn btn-primary" disabled>发送文件</button>
+                    <button id="clearSendBtn" class="btn btn-secondary">清空</button>
+                </div>
+            </div>
+
+            <!-- 接收数据区域 -->
+            <div class="receive-panel">
+                <h2>接收数据</h2>
+                <div class="form-group">
+                    <label>
+                        <input type="radio" name="receiveFormat" value="text" checked> 文本显示
+                    </label>
+                    <label>
+                        <input type="radio" name="receiveFormat" value="hex"> 十六进制显示
+                    </label>
+                    <label>
+                        <input type="checkbox" id="autoScroll" checked> 自动滚动
+                    </label>
+                </div>
+                <div class="receive-area">
+                    <div id="logArea" class="log-area" style="height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; background: #f9f9f9; font-family: monospace;"></div>
+                </div>
+                <div class="button-group">
+                    <button id="clearReceiveBtn" class="btn btn-secondary">清空接收</button>
+                    <button id="saveLogBtn" class="btn btn-secondary">保存日志</button>
+                </div>
+            </div>
+
+            <!-- 统计信息 -->
+            <div class="stats-panel">
+                <h2>统计信息</h2>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-label">发送字节:</span>
+                        <span id="sentBytes" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">接收字节:</span>
+                        <span id="receivedBytes" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">发送包数:</span>
+                        <span id="sentPackets" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">接收包数:</span>
+                        <span id="receivedPackets" class="stat-value">0</span>
+                    </div>
+                </div>
+                <button id="resetStatsBtn" class="btn btn-secondary">重置统计</button>
+            </div>
+        </div>
+    </div>    <script src="udp_assistant.js"></script>
+</body>
+</html>
