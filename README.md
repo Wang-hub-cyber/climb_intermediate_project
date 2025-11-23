@@ -1,6 +1,6 @@
-# Climb Intermediate Project - 信号合成与传输系统
+# signal synthesis and transmission 信号合成与传输系统
 
-这是一个基于 FPGA 和 Web 技术的综合信号处理与传输系统。项目包含一个功能强大的上位机软件套装（Web前端 + Node.js后端）以及对应的 FPGA 工程文件。
+这是一个基于Altera公司 Cyclone ⅣE系列 FPGA 和 Web 技术的综合信号处理与传输系统。项目包含一个功能强大的上位机软件套装（Web前端 + Node.js后端）以及对应的 FPGA 工程文件，使用Quartus13.0。
 
 主要用于生成自定义波形或调制信号，并通过以太网（UDP协议）将数据高速传输至 FPGA 开发板进行处理或输出。
 
